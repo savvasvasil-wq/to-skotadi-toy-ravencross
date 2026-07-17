@@ -5,13 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Το Σκοτάδι του Ρέιβενκρος - Σάββας Βασιλειάδης</title>
     
-    <!-- Κατάλληλες γραμματοσειρές για το στυλ του τίτλου (MedievalSharp) και του κειμένου -->
-    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;700&family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
     <!-- Εικονίδιο στο Tab -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👁️</text></svg>">
 
     <style>
+        /* 1. ΕΙΔΙΚΟΣ ΚΩΔΙΚΑΣ ΓΙΑ ΝΑ "ΚΛΕΙΔΩΣΕΙ" Η ΓΡΑΜΜΑΤΟΣΕΙΡΑ MedievalSharp ΣΤΑ ΚΙΝΗΤΑ */
+        @font-face {
+            font-family: 'MedievalSharp';
+            font-style: normal;
+            font-weight: 400;
+            font-display: swap;
+            src: url(https://fonts.gstatic.com/s/medievalsharp/v18/R71KjN6YnaV9_EFr9N6M4X4_640.woff2) format('woff2');
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -26,7 +35,11 @@
             line-height: 1.8;
             overflow-x: hidden;
             position: relative;
-            /* Fade-in animation για όλη τη σελίδα κατά το φόρτωμα */
+        }
+
+        /* 2. ΚΩΔΙΚΑΣ ΓΙΑ ΤΟ SMOOTH FADE-IN ΣΕ ΚΙΝΗΤΑ ΚΑΙ ΥΠΟΛΟΓΙΣΤΕΣ */
+        #main-wrapper {
+            opacity: 0;
             animation: page-fade-in 1.8s ease-out forwards;
         }
 
@@ -218,18 +231,24 @@
             100% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.05) skewX(2deg); }
         }
 
-       /* Γοτθικός Τίτλος με Ελάχιστο, Διακριτικό Εφέ Λαμπυρίσματος (Συμβατό με Κινητά) */
+        /* 3. ΑΝΑΘΕΩΡΗΜΕΝΟΣ, ΑΠΛΟΣ, ΣΥΜΒΑΤΟΣ ΜΕ ΚΙΝΗΤΑ ΓΟΤΘΙΚΟΣ ΤΙΤΛΟΣ */
         .book-title {
-            font-family: 'MedievalSharp', cursive;
+            font-family: 'MedievalSharp', cursive; /* Η γραμματοσειρά MedievalSharp */
             font-size: 4.8rem;
             line-height: 1.2;
             text-transform: uppercase;
             letter-spacing: 3px;
-            color: #d8d8dd; /* Σταθερό χρώμα για εγγυημένη εμφάνιση στα κινητά */
-            text-align: center;
-            display: block;
+            
+            /* Απλό, σταθερό γκρι-ασημί χρώμα για εγγυημένη εμφάνιση στα κινητά */
+            color: #d8d8dd; 
+            background: none;
+            -webkit-background-clip: unset;
+            background-clip: unset;
+            -webkit-text-fill-color: unset;
+            
+            /* Ελάχιστο, διακριτικό εφέ λαμπυρίσματος σκιών (αχνοφαίνεται) */
+            filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.9));
             position: relative;
-            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.9));
             animation: subtle-fire 2s infinite alternate ease-in-out;
         }
 
@@ -448,103 +467,108 @@
 </head>
 <body>
 
-    <!-- Canvas για χιόνι, στάχτη και φλόγες μετεωρίτες -->
-    <canvas id="ambient-canvas"></canvas>
+    <!-- 4. ΠΛΑΙΣΙΟ ΓΙΑ ΕΓΓΥΗΜΕΝΟ FADE-IN animation ΣΤΑ ΚΙΝΗΤΑ -->
+    <div id="main-wrapper">
 
-    <!-- Μόνιμη Smooth Ομίχλη στο Κάτω Μέρος -->
-    <div class="bottom-fog-container">
-        <div class="fog-wave layer1"></div>
-        <div class="fog-wave layer2"></div>
-    </div>
+        <!-- Canvas για χιόνι, στάχτη και φλόγες μετεωρίτες -->
+        <canvas id="ambient-canvas"></canvas>
 
-    <!-- Audio Player -->
-    <div class="audio-player">
-        <audio id="soundtrack" loop>
-            <source src="3.mp3" type="audio/mpeg">
-            Your browser does not support the audio element.
-        </audio>
-        <button class="audio-btn" id="playPauseBtn" onclick="toggleAudio()">▶</button>
-        <span class="audio-text" id="audioStatus">Ενεργοποιηση Ατμοσφαιρας</span>
-    </div>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <p class="author-name">Σαββας Βασιλειαδης</p>
-            
-            <!-- Τίτλος με εφέ ομίχλης και ήπιας φωτιάς -->
-            <div class="title-container">
-                <div class="fog-effect"></div>
-                <h1 class="book-title" id="main-title">Το Σκοτάδι του Ρέιβενκρος</h1>
-            </div>
-
-            <p class="book-tagline">Όλοι νόμιζαν πως είναι ασφαλείς, μέχρι που εκείνη επέστρεψε.</p>
-            <a href="https://www.pigi.gr/product/vivlio-fantasias-to-skotadi-tou-ravenkros-ekdoseis-pigi/" target="_blank" class="cta-btn">Προπαραγγειλε το Βιβλιο</a>
+        <!-- Μόνιμη Smooth Ομίχλη στο Κάτω Μέρος -->
+        <div class="bottom-fog-container">
+            <div class="fog-wave layer1"></div>
+            <div class="fog-wave layer2"></div>
         </div>
-    </section>
 
-    <div class="container">
-        <!-- Synopsis Section -->
-        <section class="synopsis-section">
-            <div class="quote-callout">
-                «Κανείς στο Ρέιβενκρος δεν άκουσε τις τελευταίες του κραυγές...»
-            </div>
-            <h2 class="section-title">Η Υποθεση</h2>
-            <div class="synopsis-text">
-                <p>Το Ρέιβενκρος είναι ένας τόπος τυλιγμένος στη σιωπή, εκεί όπου η ομίχλη δεν φεύγει ποτέ. Κανείς δεν μιλάει για το σκοτεινό παρελθόν – όμως όλοι το κουβαλούν. Μια άγνωστη γυναίκα καταφθάνει ένα παγωμένο βράδυ, κι από εκείνη τη στιγμή όλα αλλάζουν.</p>
-                <p>Οι παλιοί ψίθυροι ξυπνούν κι ο αέρας μυρίζει ξανά καμένο ξύλο. Μια κατάρα, παλιά όσο και το ίδιο το χωριό, θα ζητήσει να ολοκληρωθεί και η μάγισσα θα είναι αμείλικτη.</p>
-                <p>Ανεξήγητα φαινόμενα αρχίζουν να εμφανίζονται στο Ρέιβενκρος: η ομίχλη, τα κοράκια, το χιόνι, μια ανίατη ασθένεια. Όλοι θα οδηγηθούν στην παράνοια και η μάγισσα θα ψιθυρίζει ανάμεσα από τα δέντρα του δάσους, καλύπτοντας τα πάντα με το σκοτεινό της πέπλο.</p>
-                <p><em>Αν τολμάς να αντικρίσεις τα πύρινα μάτια της, τότε το Ρέιβενκρος σε περιμένει…</em></p>
+        <!-- Audio Player -->
+        <div class="audio-player">
+            <audio id="soundtrack" loop>
+                <source src="3.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+            <button class="audio-btn" id="playPauseBtn" onclick="toggleAudio()">▶</button>
+            <span class="audio-text" id="audioStatus">Ενεργοποιηση Ατμοσφαιρας</span>
+        </div>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <p class="author-name">Σαββας Βασιλειαδης</p>
+                
+                <!-- Τίτλος με εφέ ομίχλης και ήπιας φωτιάς -->
+                <div class="title-container">
+                    <div class="fog-effect"></div>
+                    <h1 class="book-title" id="main-title">Το Σκοτάδι του Ρέιβενκρος</h1>
+                </div>
+
+                <p class="book-tagline">Όλοι νόμιζαν πως είναι ασφαλείς, μέχρι που εκείνη επέστρεψε.</p>
+                <a href="https://www.pigi.gr/product/vivlio-fantasias-to-skotadi-tou-ravenkros-ekdoseis-pigi/" target="_blank" class="cta-btn">Προπαραγγειλε το Βιβλιο</a>
             </div>
         </section>
-    </div>
 
-    <!-- Details Section with Cover -->
-    <div class="container">
-        <div class="gothic-divider"></div>
-        <section class="book-details">
-            <div class="cover-wrapper">
-                <img src="2.jpg" alt="Το Σκοτάδι του Ρέιβενκρος Εξώφυλλο" class="cover-img">
-            </div>
-            <div>
-                <h2 class="section-title" style="text-align: left; margin-bottom: 20px;">Το Βιβλιο</h2>
-                <p style="color: #ccc; margin-bottom: 30px;">Ένα ατμοσφαιρικό βιβλίο φαντασίας όπου η μαγεία, οι κατάρες, οι δολοφονίες και τα αρχαία μυστικά μετατρέπουν το Ρέιβενκρος σε έναν τόπο όπου τίποτα δεν είναι όπως φαίνεται. Το συγγραφικό ντεμπούτο του Σάββα Βασιλειάδη στο γοτθικό μυθιστόρημα.</p>
-                <a href="https://www.pigi.gr/product/vivlio-fantasias-to-skotadi-tou-ravenkros-ekdoseis-pigi/" target="_blank" class="cta-btn">Αποκτησε το Αντιτυπο σου</a>
-            </div>
-        </section>
-    </div>
-
-    <!-- Author Section -->
-    <section class="author-section">
         <div class="container">
-            <div class="author-grid">
+            <!-- Synopsis Section -->
+            <section class="synopsis-section">
+                <div class="quote-callout">
+                    «Κανείς στο Ρέιβενκρος δεν άκουσε τις τελευταίες του κραυγές...»
+                </div>
+                <h2 class="section-title">Η Υποθεση</h2>
+                <div class="synopsis-text">
+                    <p>Το Ρέιβενκρος είναι ένας τόπος τυλιγμένος στη σιωπή, εκεί όπου η ομίχλη δεν φεύγει ποτέ. Κανείς δεν μιλάει για το σκοτεινό παρελθόν – όμως όλοι το κουβαλούν. Μια άγνωστη γυναίκα καταφθάνει ένα παγωμένο βράδυ, κι από εκείνη τη στιγμή όλα αλλάζουν.</p>
+                    <p>Οι παλιοί ψίθυροι ξυπνούν κι ο αέρας μυρίζει ξανά καμένο ξύλο. Μια κατάρα, παλιά όσο και το ίδιο το χωριό, θα ζητήσει να ολοκληρωθεί και η μάγισσα θα είναι αμείλικτη.</p>
+                    <p>Ανεξήγητα φαινόμενα αρχίζουν να εμφανίζονται στο Ρέιβενκρος: η ομίχλη, τα κοράκια, το χιόνι, μια ανίατη ασθένεια. Όλοι θα οδηγηθούν στην παράνοια και η μάγισσα θα ψιθυρίζει ανάμεσα από τα δέντρα του δάσους, καλύπτοντας τα πάντα με το σκοτεινό της πέπλο.</p>
+                    <p><em>Αν τολμάς να αντικρίσεις τα πύρινα μάτια της, τότε το Ρέιβενκρος σε περιμένει…</em></p>
+                </div>
+            </section>
+        </div>
+
+        <!-- Details Section with Cover -->
+        <div class="container">
+            <div class="gothic-divider"></div>
+            <section class="book-details">
+                <div class="cover-wrapper">
+                    <img src="2.jpg" alt="Το Σκοτάδι του Ρέιβενκρος Εξώφυλλο" class="cover-img">
+                </div>
                 <div>
-                    <h2 class="section-title" style="text-align: left; margin-bottom: 30px;">Ο Συγγραφεας</h2>
-                    <div class="author-bio">
-                        <p style="margin-bottom: 20px;">Ο <strong>Σάββας Βασιλειάδης</strong> γεννήθηκε στην Κοζάνη και σπούδασε Ελληνική Φιλολογία στο Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης. Από μικρή ηλικία βυθίστηκε στον κόσμο των βιβλίων και σύντομα ανακάλυψε πως η συγγραφή δεν ήταν απλώς μια δημιουργική διέξοδος, αλλά ο πιο αληθινός τρόπος να εκφράσει τις σκιές και τα φώτα της ανθρώπινης ψυχής.</p>
-                        <p>Αντλεί έμπνευση από την ψυχολογία, την ιστορία και τις σκοτεινές παραδόσεις, πλάθοντας κόσμους όπου το υπερφυσικό συναντά το ανθρώπινο δράμα. Το Ρέιβενκρος δεν είναι απλώς σκηνικό· είναι ένας ζωντανός τόπος όπου οι σκιές δεν σβήνουν ποτέ, όπως ακριβώς και οι δεισιδαιμονίες, οι προκαταλήψεις και οι ενοχές που στοιχειώνουν κάθε εποχή.</p>
+                    <h2 class="section-title" style="text-align: left; margin-bottom: 20px;">Το Βιβλιο</h2>
+                    <p style="color: #ccc; margin-bottom: 30px;">Ένα ατμοσφαιρικό βιβλίο φαντασίας όπου η μαγεία, οι κατάρες, οι δολοφονίες και τα αρχαία μυστικά μετατρέπουν το Ρέιβενκρος σε έναν τόπο όπου τίποτα δεν είναι όπως φαίνεται. Το συγγραφικό ντεμπούτο του Σάββα Βασιλειάδη στο γοτθικό μυθιστόρημα.</p>
+                    <a href="https://www.pigi.gr/product/vivlio-fantasias-to-skotadi-tou-ravenkros-ekdoseis-pigi/" target="_blank" class="cta-btn">Αποκτησε το Αντιτυπο σου</a>
+                </div>
+            </section>
+        </div>
+
+        <!-- Author Section -->
+        <section class="author-section">
+            <div class="container">
+                <div class="author-grid">
+                    <div>
+                        <h2 class="section-title" style="text-align: left; margin-bottom: 30px;">Ο Συγγραφεας</h2>
+                        <div class="author-bio">
+                            <p style="margin-bottom: 20px;">Ο <strong>Σάββας Βασιλειάδης</strong> γεννήθηκε στην Κοζάνη και σπούδασε Ελληνική Φιλολογία στο Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης. Από μικρή ηλικία βυθίστηκε στον κόσμο των βιβλίων και σύντομα ανακάλυψε πως η συγγραφή δεν ήταν απλώς μια δημιουργική διέξοδος, αλλά ο πιο αληθινός τρόπος να εκφράσει τις σκιές και τα φώτα της ανθρώπινης ψυχής.</p>
+                            <p>Αντλεί έμπνευση από την ψυχολογία, την ιστορία και τις σκοτεινές παραδόσεις, πλάθοντας κόσμους όπου το υπερφυσικό συναντά το ανθρώπινο δράμα. Το Ρέιβενκρος δεν είναι απλώς σκηνικό· είναι ένας ζωντανός τόπος όπου οι σκιές δεν σβήνουν ποτέ, όπως ακριβώς και οι δεισιδαιμονίες, οι προκαταλήψεις και οι ενοχές που στοιχειώνουν κάθε εποχή.</p>
+                        </div>
+                    </div>
+                    <div class="author-img-wrapper">
+                        <img src="1.jpg" alt="Σάββας Βασιλειάδης" class="author-img">
                     </div>
                 </div>
-                <div class="author-img-wrapper">
-                    <img src="1.jpg" alt="Σάββας Βασιλειάδης" class="author-img">
-                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <h3 class="social-title">Ακολουθηστε το Σκοταδι</h3>
-            <div class="social-links">
-                <a href="https://www.instagram.com/savvas_vasileiadis_?igsh=MThjMGcyb2h2MGVrag==" target="_blank" class="social-icon">Instagram</a>
-                <a href="https://www.tiktok.com/@savvas.vasileiadis?_r=1&_t=ZN-9877Aj7Ui6I" target="_blank" class="social-icon">TikTok</a>
-                <a href="mailto:savvasvasil@gmail.com" class="social-icon">Email</a>
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <h3 class="social-title">Ακολουθηστε το Σκοταδι</h3>
+                <div class="social-links">
+                    <a href="https://www.instagram.com/savvas_vasileiadis_?igsh=MThjMGcyb2h2MGVrag==" target="_blank" class="social-icon">Instagram</a>
+                    <a href="https://www.tiktok.com/@savvas.vasileiadis?_r=1&_t=ZN-9877Aj7Ui6I" target="_blank" class="social-icon">TikTok</a>
+                    <a href="mailto:savvasvasil@gmail.com" class="social-icon">Email</a>
+                </div>
+                <div class="gothic-divider" style="margin: 30px auto; max-width: 30%;"></div>
+                <p class="copyright">&copy; 2026 Σάββας Βασιλειάδης. Όλα τα δικαιώματα διατηρούνται.</p>
             </div>
-            <div class="gothic-divider" style="margin: 30px auto; max-width: 30%;"></div>
-            <p class="copyright">&copy; 2026 Σάββας Βασιλειάδης. Όλα τα δικαιώματα διατηρούνται.</p>
-        </div>
-    </footer>
+        </footer>
+
+    </div> <!-- Τέλος main-wrapper -->
 
     <!-- Scripts -->
     <script>
