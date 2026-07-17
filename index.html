@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Το Σκοτάδι του Ρέιβενκρος - Σάββας Βασιλειάδης</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;700&family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0c0c0c;
+            color: #e0e0e0;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.25rem;
+            line-height: 1.8;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        a {
+            color: #8b0000;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #ff3333;
+        }
+
+        /* Canvas για Χιόνι και Στάχτη */
+        #ambient-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        /* Audio Controller Setup */
+        .audio-player {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(12, 12, 12, 0.85);
+            border: 1px solid #333;
+            padding: 10px 15px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+        }
+
+        .audio-btn {
+            background: none;
+            border: none;
+            color: #8b0000;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s, color 0.2s;
+        }
+
+        .audio-btn:hover {
+            color: #ff3333;
+            transform: scale(1.1);
+        }
+
+        .audio-text {
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #aaa;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(to bottom, rgba(12, 12, 12, 0.4), #0c0c0c), url('2.jpg') no-repeat center center/cover;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 4; /* Πάνω από το canvas για να είναι clickable το κουμπί */
+            max-width: 800px;
+        }
+
+        .author-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            color: #888;
+            margin-bottom: 15px;
+        }
+
+        /* Ήπια Φλεγόμενος Τίτλος */
+        .book-title {
+            position: relative;
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            line-height: 1.2;
+            color: #f5f5f5;
+            text-transform: uppercase;
+            animation: gentle-fire 3s infinite alternate;
+        }
+
+        @keyframes gentle-fire {
+            0% {
+                text-shadow: 0 -2px 4px rgba(255,255,255,0.2), 0 -4px 8px rgba(255,100,0,0.3), 0 -8px 12px rgba(255,50,0,0.4), 0 -12px 16px rgba(139,0,0,0.5);
+            }
+            100% {
+                text-shadow: 0 -1px 3px rgba(255,255,255,0.2), 0 -3px 6px rgba(255,80,0,0.2), 0 -6px 10px rgba(255,40,0,0.3), 0 -10px 14px rgba(139,0,0,0.4);
+            }
+        }
+
+        .book-tagline {
+            font-style: italic;
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            color: #b0b0b0;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            font-family: 'Cinzel', serif;
+            background-color: #8b0000;
+            color: #fff;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            background-color: transparent;
+            color: #ff3333;
+            border: 1px solid #ff3333;
+            box-shadow: 0 0 25px rgba(255, 51, 51, 0.6);
+            transform: translateY(-3px);
+        }
+
+        /* Divider Line */
+        .gothic-divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, #8b0000, transparent);
+            margin: 60px auto;
+            max-width: 60%;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* Synopsis Section */
+        .synopsis-section {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            color: #fff;
+        }
+
+        .synopsis-text {
+            max-width: 750px;
+            margin: 0 auto;
+            font-size: 1.4rem;
+            color: #ccc;
+            text-align: justify;
+        }
+
+        .synopsis-text p {
+            margin-bottom: 25px;
+        }
+
+        .quote-callout {
+            font-family: 'Pinyon Script', cursive;
+            font-size: 3rem;
+            color: #8b0000;
+            margin-bottom: 30px;
+            line-height: 1;
+        }
+
+        /* Cover and Bio Grid */
+        .book-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            padding: 80px 0;
+        }
+
+        .cover-wrapper {
+            display: flex;
+            justify-content: center;
+        }
+
+        .cover-img {
+            max-width: 100%;
+            height: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+            border: 1px solid #222;
+            transition: transform 0.5s;
+        }
+
+        .cover-img:hover {
+            transform: scale(1.03) rotate(-1deg);
+        }
+
+        /* Author Section */
+        .author-section {
+            background-color: #080808;
+            padding: 100px 0;
+            border-top: 1px solid #111;
+            border-bottom: 1px solid #111;
+        }
+
+        .author-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .author-bio {
+            font-size: 1.3rem;
+            color: #bbb;
+        }
+
+        .author-img-wrapper {
+            display: flex;
+            justify-content: center;
+        }
+
+        .author-img {
+            max-width: 320px;
+            border-radius: 50%;
+            filter: grayscale(100%) contrast(110%);
+            border: 2px solid #333;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+            transition: filter 0.5s, transform 0.5s;
+        }
+
+        .author-img:hover {
+            filter: grayscale(20%) contrast(100%);
+            transform: scale(1.02);
+        }
+
+        /* Footer & Socials */
+        footer {
+            padding: 80px 0 40px 0;
+            text-align: center;
+            background-color: #050505;
+        }
+
+        .social-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 25px;
+            color: #777;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            margin-bottom: 50px;
+        }
+
+        .social-icon {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #aaa;
+            border-bottom: 1px solid transparent;
+            padding-bottom: 5px;
+        }
+
+        .social-icon:hover {
+            color: #fff;
+            border-bottom: 1px solid #8b0000;
+        }
+
+        .copyright {
+            font-size: 0.9rem;
+            color: #444;
+            letter-spacing: 1px;
+        }
+
+        /* --- ΤΟ ΚΟΡΑΚΙ (CSS HTML Artwork & Animations) --- */
+        #crow-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            z-index: 999;
+            pointer-events: none;
+            transition: all 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: crowIdle 1.5s infinite alternate;
+        }
+
+        /* Κίνηση πετάγματος ανά 10 δευτερόλεπτα από άκρη σε άκρη */
+        @keyframes crowFlightPattern {
+            0%, 40% { bottom: 20px; right: 20px; left: auto; transform: scaleX(1); }
+            48% { bottom: 300px; right: 50vw; left: auto; transform: scaleX(1) translateY(-50px); }
+            55%, 90% { bottom: 20px; left: 20px; right: auto; transform: scaleX(-1); }
+            98% { bottom: 300px; left: 50vw; right: auto; transform: scaleX(-1) translateY(-50px); }
+            100% { bottom: 20px; right: 20px; left: auto; transform: scaleX(1); }
+        }
+
+        /* Φυσιολογικό κούνημα σώματος (idle) */
+        @keyframes crowIdle {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(3px) rotate(2deg); }
+        }
+
+        .crow-body {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: #111;
+            border-radius: 50% 40% 40% 40%;
+            box-shadow: inset -5px -5px 15px #000;
+        }
+
+        /* Σμαραγδένια Μάτια που κοιτάνε τον χρήστη */
+        .crow-eye {
+            position: absolute;
+            top: 22px;
+            left: 20px;
+            width: 7px;
+            height: 7px;
+            background: #50c878;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #50c878, 0 0 2px #fff;
+            animation: crowBlink 4s infinite;
+        }
+
+        @keyframes crowBlink {
+            0%, 95%, 100% { transform: scaleY(1); }
+            97% { transform: scaleY(0); }
+        }
+
+        /* Ράμφος που χτυπάει */
+        .crow-beak {
+            position: absolute;
+            top: 24px;
+            left: -15px;
+            width: 0;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-right: 18px solid #1a1a1a;
+            transform: rotate(5deg);
+            transform-origin: right center;
+            animation: crowPeck 0.6s infinite alternate;
+        }
+
+        @keyframes crowPeck {
+            0%, 70% { transform: rotate(5deg); }
+            85%, 100% { transform: rotate(-10deg); }
+        }
+
+        .crow-wing {
+            position: absolute;
+            top: 30px;
+            right: 10px;
+            width: 45px;
+            height: 25px;
+            background: #0a0a0a;
+            border-radius: 50%;
+            transform: rotate(-15deg);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .book-details, .author-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                text-align: center;
+            }
+            .author-grid { display: flex; flex-direction: column-reverse; }
+            .book-title { font-size: 2.5rem; }
+            .synopsis-text { font-size: 1.2rem; text-align: left; }
+            .author-img { max-width: 250px; }
+            #crow-container { display: none; } /* Κρύβεται στα κινητά για να μην ενοχλεί την ανάγνωση */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvas για το χιόνι και τη στάχτη -->
+    <canvas id="ambient-canvas"></canvas>
+
+    <!-- Το Κοράκι -->
+    <div id="crow-container">
+        <div class="crow-body">
+            <div class="crow-beak"></div>
+            <div class="crow-eye"></div>
+            <div class="crow-wing"></div>
+        </div>
+    </div>
+
+    <!-- Audio Player -->
+    <div class="audio-player">
+        <audio id="soundtrack" loop>
+            <source src="3.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <button class="audio-btn" id="playPauseBtn" onclick="toggleAudio()">▶</button>
+        <span class="audio-text" id="audioStatus">Ενεργοποιηση Ατμοσφαιρας</span>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <p class="author-name">Σαββας Βασιλειαδης</p>
+            <!-- Ο φλεγόμενος τίτλος, στόχος για τη γέννηση της στάχτης -->
+            <h1 class="book-title" id="main-title">Το Σκοταδι του Ρεϊβενκρος</h1>
+            <p class="book-tagline">Όλοι νόμιζαν πως είναι ασφαλείς, μέχρι που εκείνη επέστρεψε.</p>
+            <a href="https://www.pigi.gr/product/vivlio-fantasias-to-skotadi-tou-ravenkros-ekdoseis-pigi/" target="_blank" class="cta-btn">Προπαραγγειλε το Βιβλιο</a>
+        </div>
+    </section>
+
+    <div class="container">
+        <!-- Synopsis Section -->
+        <section class="synopsis-section">
+            <div class="quote-callout">
+                «Κανείς στο Ρέιβενκρος δεν άκουσε τις τελευταίες του κραυγές...»
+            </div>
+            <h2 class="section-title">Η Υποθεση</h2>
+            <div class="synopsis-text">
+                <p>Το Ρέιβενκρος είναι ένας τόπος τυλιγμένος στη σιωπή, εκεί όπου η ομίχλη δεν φεύγει ποτέ. Κανείς δεν μιλάει για το σκοτεινό παρελθόν – όμως όλοι το κουβαλούν. Μια άγνωστη γυναίκα καταφθάνει ένα παγωμένο βράδυ, κι από εκείνη τη στιγμή όλα αλλάζουν.</p>
+                <p>Οι παλιοί ψίθυροι ξυπνούν κι ο αέρας μυρίζει ξανά καμένο ξύλο. Μια κατάρα, παλιά όσο και το ίδιο το χωριό, θα ζητήσει να ολοκληρωθεί και η μάγισσα θα είναι αμείλικτη.</p>
+                <p>Ανεξήγητα φαινόμενα αρχίζουν να εμφανίζονται στο Ρέιβενκρος: η ομίχλη, τα κοράκια, το χιόνι, μια ανίατη ασθένεια. Όλοι θα οδηγηθούν στην παράνοια και η μάγισσα θα ψιθυρίζει ανάμεσα από τα δέντρα του δάσους, καλύπτοντας τα πάντα με το σκοτεινό της πέπλο.</p>
+                <p><em>Αν τολμάς να αντικρίσεις τα πύρινα μάτια της, τότε το Ρέιβενκρος σε περιμένει…</em></p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Details Section with Cover -->
+    <div class="container">
+        <div class="gothic-divider"></div>
+        <section class="book-details">
+            <div class="cover-wrapper">
+                <img src="2.jpg" alt="Το Σκοτάδι του Ρέιβενκρος Εξώφυλλο" class="cover-img">
+            </div>
+            <div>
+                <h2 class="section-title" style="text-align: left; margin-bottom: 20px;">Το Βιβλιο</h2>
+                <p style="color: #ccc; margin-bottom: 30px;">Ένα ατμοσφαιρικό βιβλίο φαντασίας όπου η μαγεία, οι κατάρες, οι δολοφονίες και τα αρχαία μυστικά μετατρέπουν το Ρέιβενκρος σε έναν τόπο όπου τίποτα δεν είναι όπως φαίνεται. Το συγγραφικό ντεμπούτο του Σάββα Βασιλειάδη στο γοτθικό μυθιστόρημα.</p>
+                <a href="https://www.pigi.gr/product/vivlio-fantasias-to-skotadi-tou-ravenkros-ekdoseis-pigi/" target="_blank" class="cta-btn">Αποκτησε το Αντιτυπο σου</a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Author Section -->
+    <section class="author-section">
+        <div class="container">
+            <div class="author-grid">
+                <div>
+                    <h2 class="section-title" style="text-align: left; margin-bottom: 30px;">Ο Συγγραφεας</h2>
+                    <div class="author-bio">
+                        <p style="margin-bottom: 20px;">Ο <strong>Σάββας Βασιλειάδης</strong> γεννήθηκε στην Κοζάνη και σπούδασε Ελληνική Φιλολογία στο Αριστοτέλειο Πανεπιστήμιο Θεσσαλονίκης. Από μικρή ηλικία βυθίστηκε στον κόσμο των βιβλίων και σύντομα ανακάλυψε πως η συγγραφή δεν ήταν απλώς μια δημιουργική διέξοδος, αλλά ο πιο αληθινός τρόπος να εκφράσει τις σκιές και τα φώτα της ανθρώπινης ψυχής.</p>
+                        <p>Αντλεί έμπνευση από την ψυχολογία, την ιστορία και τις σκοτεινές παραδόσεις, πλάθοντας κόσμους όπου το υπερφυσικό συναντά το ανθρώπινο δράμα. Το Ρέιβενκρος δεν είναι απλώς σκηνικό· είναι ένας ζωντανός τόπος όπου οι σκιές δεν σβήνουν ποτέ, όπως ακριβώς και οι δεισιδαιμονίες, οι προκαταλήψεις και οι ενοχές που στοιχειώνουν κάθε εποχή.</p>
+                    </div>
+                </div>
+                <div class="author-img-wrapper">
+                    <img src="1.jpg" alt="Σάββας Βασιλειάδης" class="author-img">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <h3 class="social-title">Ακολουθηστε το Σκοταδι</h3>
+            <div class="social-links">
+                <a href="https://www.instagram.com/savvas_vasileiadis_?igsh=MThjMGcyb2h2MGVrag==" target="_blank" class="social-icon">Instagram</a>
+                <a href="https://www.tiktok.com/@savvas.vasileiadis?_r=1&_t=ZN-9877Aj7Ui6I" target="_blank" class="social-icon">TikTok</a>
+                <a href="mailto:savvasvasil@gmail.com" class="social-icon">Email</a>
+            </div>
+            <div class="gothic-divider" style="margin: 30px auto; max-width: 30%;"></div>
+            <p class="copyright">&copy; 2026 Σάββας Βασιλειάδης. Όλα τα δικαιώματα διατηρούνται.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts (Audio, Χιόνι, Στάχτη, Πτήση Κορακιού) -->
+    <script>
+        // 1. Audio Control
+        const audio = document.getElementById('soundtrack');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const audioStatus = document.getElementById('audioStatus');
+
+        function toggleAudio() {
+            if (audio.paused) {
+                audio.play();
+                playPauseBtn.innerText = '⏸';
+                audioStatus.innerText = 'Ηχος Ενεργος';
+            } else {
+                audio.pause();
+                playPauseBtn.innerText = '▶';
+                audioStatus.innerText = 'Ενεργοποιηση Ατμοσφαιρας';
+            }
+        }
+
+        // 2. Ενεργοποίηση της πτήσης του κορακιού ανά 10 δεύτερα
+        setInterval(() => {
+            const crow = document.getElementById('crow-container');
+            if(crow) {
+                // Εναλλαγή θέσης αριστερά-δεξιά μέσω CSS
+                if (crow.style.left === '20px') {
+                    crow.style.left = 'auto';
+                    crow.style.right = '20px';
+                    crow.style.transform = 'scaleX(1)';
+                } else {
+                    crow.style.right = 'auto';
+                    crow.style.left = '20px';
+                    crow.style.transform = 'scaleX(-1)';
+                }
+            }
+        }, 10000);
+
+        // 3. Μηχανισμός Canvas για Χιόνι & Στάχτη
+        const canvas = document.getElementById('ambient-canvas');
+        const ctx = canvas.getContext('2d');
+        const titleEl = document.getElementById('main-title');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        const snowflakes = [];
+        const ashes = [];
+
+        // Δημιουργία Νιφάδων (Απαλό & Αργό Χιόνι)
+        for (let i = 0; i < 60; i++) {
+            snowflakes.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                r: Math.random() * 2 + 1, // Μικρές νιφάδες
+                d: Math.random() * 0.5 + 0.2 // Πολύ αργή ταχύτητα
+            });
+        }
+
+        function drawAmbient() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Σχεδίαση Χιονιού
+            ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+            ctx.beginPath();
+            for (let i = 0; i < snowflakes.length; i++) {
+                const f = snowflakes[i];
+                ctx.moveTo(f.x, f.y);
+                ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2, true);
+
+                // Ανανέωση θέσης
+                f.y += f.d;
+                f.x += Math.sin(f.y / 30) * 0.2; // Ελαφρύ λίκνισμα δεξιά-αριστερά
+
+                if (f.y > height) {
+                    snowflakes[i] = { x: Math.random() * width, y: 0, r: f.r, d: f.d };
+                }
+            }
+            ctx.fill();
+
+            // Παραγωγή Στάχτης από τον Τίτλο
+            if (titleEl) {
+                const rect = titleEl.getBoundingClientRect();
+                // Μόνο αν ο τίτλος είναι ορατός στην οθόνη
+                if (rect.bottom > 0 && rect.top < height && Math.random() < 0.15) {
+                    ashes.push({
+                        x: rect.left + Math.random() * rect.width,
+                        y: rect.bottom - 10,
+                        size: Math.random() * 2 + 0.5,
+                        speedY: Math.random() * 0.8 + 0.4,
+                        speedX: (Math.random() - 0.5) * 0.5,
+                        alpha: 1
+                    });
+                }
+            }
+
+            // Σχεδίαση Στάχτης
+            for (let i = ashes.length - 1; i >= 0; i--) {
+                const a = ashes[i];
+                ctx.fillStyle = `rgba(100, 100, 100, ${a.alpha})`;
+                ctx.beginPath();
+                ctx.arc(a.x, a.y, a.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                a.y += a.speedY;
+                a.x += a.speedX;
+                a.alpha -= 0.003; // Σβήνει αργά καθώς πέφτει
+
+                if (a.alpha <= 0 || a.y > height) {
+                    ashes.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(drawAmbient);
+        }
+
+        drawAmbient();
+    </script>
+</body>
+</html>
