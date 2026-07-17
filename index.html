@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Το Σκοτάδι του Ρέιβενκρος - Σάββας Βασιλειάδης</title>
     
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Google Fonts - Ενημερωμένα με τις νέες, συμβατές γραμματοσειρές -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Parisienne&family=Almendra+SC&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
     <!-- Εικονίδιο στο Tab -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👁️</text></svg>">
 
     <style>
-        /* 1. ΕΙΔΙΚΟΣ ΚΩΔΙΚΑΣ ΓΙΑ ΝΑ "ΚΛΕΙΔΩΣΕΙ" Η ΓΡΑΜΜΑΤΟΣΕΙΡΑ MedievalSharp ΣΤΑ ΚΙΝΗΤΑ */
+        /* CSS για τη γραμματοσειρά MedievalSharp, σε περίπτωση που χρειαστεί κάπου αλλού */
         @font-face {
             font-family: 'MedievalSharp';
             font-style: normal;
@@ -37,7 +37,7 @@
             position: relative;
         }
 
-        /* 2. ΚΩΔΙΚΑΣ ΓΙΑ ΤΟ SMOOTH FADE-IN ΣΕ ΚΙΝΗΤΑ ΚΑΙ ΥΠΟΛΟΓΙΣΤΕΣ */
+        /* ΚΩΔΙΚΑΣ ΓΙΑ ΤΟ SMOOTH FADE-IN ΣΕ ΚΙΝΗΤΑ ΚΑΙ ΥΠΟΛΟΓΙΣΤΕΣ */
         #main-wrapper {
             opacity: 0;
             animation: page-fade-in 1.8s ease-out forwards;
@@ -231,9 +231,9 @@
             100% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.05) skewX(2deg); }
         }
 
-        /* 3. ΑΝΑΘΕΩΡΗΜΕΝΟΣ, ΑΠΛΟΣ, ΣΥΜΒΑΤΟΣ ΜΕ ΚΙΝΗΤΑ ΓΟΤΘΙΚΟΣ ΤΙΤΛΟΣ */
+        /* 3. ΔΙΟΡΘΩΜΕΝΟΣ ΤΙΤΛΟΣ ΜΕ ΤΟ ΣΩΣΤΟ "Σ" */
         .book-title {
-            font-family: 'MedievalSharp', cursive; /* Η γραμματοσειρά MedievalSharp */
+            font-family: 'Almendra SC', serif; /* Η νέα γραμματοσειρά για σωστά ελληνικά κεφαλαία */
             font-size: 4.8rem;
             line-height: 1.2;
             text-transform: uppercase;
@@ -338,12 +338,13 @@
             margin-bottom: 25px;
         }
 
+        /* ΔΙΟΡΘΩΜΕΝΗ ΛΕΖΑΝΤΑ ΜΕ ΣΩΣΤΟΥΣ ΤΟΝΟΥΣ */
         .quote-callout {
-            font-family: 'Pinyon Script', cursive;
+            font-family: 'Parisienne', cursive; /* Η νέα γραμματοσειρά για σωστούς τόνους */
             font-size: 3rem;
             color: #8b0000;
             margin-bottom: 30px;
-            line-height: 1;
+            line-height: 1.2; /* Ελαφρώς μεγαλύτερο line-height για να μην κόβονται οι τόνοι */
         }
 
         /* Grid */
@@ -462,12 +463,13 @@
             .book-title { font-size: 2.5rem; }
             .synopsis-text { font-size: 1.2rem; text-align: left; }
             .author-img { max-width: 250px; }
+            .quote-callout { font-size: 2rem; } /* Ελαφρώς μικρότερη λεζάντα στα κινητά */
         }
     </style>
 </head>
 <body>
 
-    <!-- 4. ΠΛΑΙΣΙΟ ΓΙΑ ΕΓΓΥΗΜΕΝΟ FADE-IN animation ΣΤΑ ΚΙΝΗΤΑ -->
+    <!-- ΠΛΑΙΣΙΟ ΓΙΑ ΕΓΓΥΗΜΕΝΟ FADE-IN animation ΣΤΑ ΚΙΝΗΤΑ -->
     <div id="main-wrapper">
 
         <!-- Canvas για χιόνι, στάχτη και φλόγες μετεωρίτες -->
