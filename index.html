@@ -8,7 +8,7 @@
     <!-- Κατάλληλες γραμματοσειρές για το στυλ του τίτλου (MedievalSharp) και του κειμένου -->
     <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;700&family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
-    <!-- Εικονίδιο Κορακιού στο Tab του Browser -->
+    <!-- Εικονίδιο Κορακιού στο Tab -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦅</text></svg>">
 
     <style>
@@ -28,11 +28,9 @@
             position: relative;
         }
 
-        /* Όλα τα sections είναι διαφανή για να φαίνονται τα κοράκια στο βάθος */
         section {
             position: relative;
             z-index: 10;
-            background: transparent !important;
         }
 
         h2, h3 {
@@ -51,40 +49,39 @@
             color: #ff3333;
         }
 
-        /* Canvas για Χιόνι και Στάχτη - Πάνω από ΟΛΑ τα στοιχεία */
+        /* Canvas για Χιόνι και Στάχτη - Πάνω από όλα */
         #ambient-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 99999; /* Απόλυτη προτεραιότητα για να μην κρύβεται */
+            z-index: 99999;
             pointer-events: none;
         }
 
-        /* Container για τα κοράκια στο φόντο */
-        #crow-background-container {
-            position: fixed;
+        /* Container για τα Κοράκια - Πάνω από το background, κάτω από το κείμενο */
+        .crow-layer {
+            position: absolute;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 2; /* Πίσω από το κείμενο, αλλά ορατό */
+            width: 100%;
+            height: 100%;
+            z-index: 2;
             pointer-events: none;
             overflow: hidden;
         }
 
-        /* Ρεαλιστική σιλουέτα κορακιού */
+        /* Ρεαλιστική σιλουέτα κορακιού, πιο έντονη */
         .scary-crow {
             position: absolute;
-            width: 45px;
-            height: 30px;
-            background: #050505;
+            width: 50px;
+            height: 35px;
+            background: #010101;
             clip-path: polygon(50% 0%, 100% 20%, 75% 45%, 60% 30%, 50% 80%, 40% 30%, 25% 45%, 0% 20%);
             opacity: 0;
         }
 
-        /* Κίνηση φτερών */
         @keyframes crowFlap {
             0% { clip-path: polygon(50% 0%, 100% 20%, 75% 45%, 60% 30%, 50% 80%, 40% 30%, 25% 45%, 0% 20%); }
             50% { clip-path: polygon(50% 15%, 100% 55%, 75% 50%, 60% 35%, 50% 90%, 40% 35%, 25% 50%, 0% 55%); }
@@ -130,7 +127,7 @@
             color: #aaa;
         }
 
-        /* Hero Section */
+        /* Hero Section με φόντο την εικόνα 1.jpg */
         .hero {
             position: relative;
             min-height: 100vh;
@@ -140,24 +137,13 @@
             align-items: center;
             text-align: center;
             padding: 40px 20px;
-            background: linear-gradient(to bottom, rgba(12, 12, 12, 0.4), #0c0c0c), url('2.jpg') no-repeat center center/cover;
+            background: linear-gradient(to bottom, rgba(12, 12, 12, 0.6), #0c0c0c), url('1.jpg') no-repeat center center/cover;
             overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.4);
-            z-index: 1;
         }
 
         .hero-content {
             position: relative;
-            z-index: 4;
+            z-index: 4; /* Πάνω από τα κοράκια και την ομίχλη */
             max-width: 1000px;
         }
 
@@ -171,54 +157,67 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
 
-        /* ΓΟΤΘΙΚΟΣ ΤΙΤΛΟΣ ΟΠΩΣ ΣΤΗ ΦΩΤΟΓΡΑΦΙΑ ΜΕ ΕΦΕ ΦΛΟΓΩΝ ΑΠΟ ΠΙΣΩ */
+        /* Container για τον Τίτλο και την Ομίχλη */
+        .title-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 35px;
+            padding: 20px;
+        }
+
+        /* Εφέ Ήπιας Ομίχλης γύρω από τα γράμματα */
+        .fog-effect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(200, 200, 210, 0.15) 0%, rgba(150, 150, 160, 0.05) 50%, transparent 70%);
+            filter: blur(15px);
+            z-index: -1;
+            pointer-events: none;
+            animation: fog-drift 6s infinite alternate ease-in-out;
+        }
+
+        @keyframes fog-drift {
+            0% { opacity: 0.6; transform: translate(-50%, -50%) scale(0.95) skewX(-2deg); }
+            100% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.05) skewX(2deg); }
+        }
+
+        /* Γοτθικός Τίτλος με Ήπιο Εφέ Φωτιάς */
         .book-title {
             font-family: 'MedievalSharp', cursive;
             font-size: 4.8rem;
-            margin-bottom: 35px;
             line-height: 1.2;
             text-transform: uppercase;
             letter-spacing: 3px;
             
-            /* Εμφάνιση ανάγλυφου μετάλλου/πέτρας όπως στο εξώφυλλο */
+            /* Υφή μετάλλου/πέτρας */
             color: #b0b0b5;
             background: linear-gradient(to bottom, #ffffff 0%, #a0a0a5 40%, #404045 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
             
-            /* Σκιές για να δείχνει τρισδιάστατο και άγριο */
             filter: drop-shadow(0px 2px 3px rgba(0,0,0,0.9)) drop-shadow(0px -1px 1px rgba(255,255,255,0.4));
-            
             position: relative;
-            animation: realistic-fire 1.2s infinite alternate ease-in-out;
+            animation: subtle-fire 1.5s infinite alternate ease-in-out;
         }
 
-        /* Το εφέ της αληθινής φωτιάς που ξεπηδάει γύρω από τα γράμματα */
-        @keyframes realistic-fire {
+        /* Ήπιο και διακριτικό εφέ φλόγας/λάμψης */
+        @keyframes subtle-fire {
             0% {
                 text-shadow: 
-                    0 -4px 4px rgba(255, 100, 0, 0.6), 
-                    0 -8px 10px rgba(255, 150, 0, 0.8), 
-                    0 -18px 20px rgba(255, 40, 0, 0.7), 
-                    0 -28px 30px rgba(139, 0, 0, 0.9),
-                    2px -2px 5px rgba(255, 100, 0, 0.5);
-            }
-            50% {
-                text-shadow: 
-                    0 -3px 5px rgba(255, 120, 0, 0.7), 
-                    0 -10px 12px rgba(255, 170, 0, 0.9), 
-                    0 -16px 18px rgba(255, 50, 0, 0.8), 
-                    0 -26px 25px rgba(139, 0, 0, 0.9),
-                    -2px -3px 6px rgba(255, 60, 0, 0.6);
+                    0 -2px 3px rgba(255, 100, 0, 0.4), 
+                    0 -4px 6px rgba(255, 150, 0, 0.3), 
+                    0 -10px 10px rgba(139, 0, 0, 0.5);
             }
             100% {
                 text-shadow: 
-                    0 -5px 6px rgba(255, 90, 0, 0.6), 
-                    0 -7px 9px rgba(255, 140, 0, 0.7), 
-                    0 -20px 22px rgba(255, 30, 0, 0.8), 
-                    0 -30px 35px rgba(139, 0, 0, 1),
-                    1px -4px 4px rgba(255, 120, 0, 0.5);
+                    0 -1px 2px rgba(255, 120, 0, 0.5), 
+                    0 -5px 8px rgba(255, 160, 0, 0.4), 
+                    0 -12px 12px rgba(139, 0, 0, 0.6);
             }
         }
 
@@ -253,7 +252,7 @@
             transform: translateY(-3px);
         }
 
-        /* Divider Line */
+        /* Divider */
         .gothic-divider {
             height: 2px;
             background: linear-gradient(to right, transparent, #8b0000, transparent);
@@ -303,7 +302,7 @@
             line-height: 1;
         }
 
-        /* Cover and Bio Grid */
+        /* Grid */
         .book-details {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -367,7 +366,7 @@
             transform: scale(1.02);
         }
 
-        /* Footer & Socials */
+        /* Footer */
         footer {
             padding: 80px 0 40px 0;
             text-align: center;
@@ -424,11 +423,8 @@
 </head>
 <body>
 
-    <!-- Canvas για το χιόνι και τη στάχτη (Καλύπτει τα πάντα) -->
+    <!-- Canvas για χιόνι και στάχτη -->
     <canvas id="ambient-canvas"></canvas>
-
-    <!-- Background Container για τα Κοράκια -->
-    <div id="crow-background-container"></div>
 
     <!-- Audio Player -->
     <div class="audio-player">
@@ -442,10 +438,18 @@
 
     <!-- Hero Section -->
     <section class="hero">
+        <!-- Επίπεδο για τα κοράκια, ακριβώς πάνω από το φόντο της Hero -->
+        <div class="crow-layer" id="hero-crows"></div>
+
         <div class="hero-content">
             <p class="author-name">Σαββας Βασιλειαδης</p>
-            <!-- Ο ανάγλυφος γοτθικός τίτλος που φλέγεται -->
-            <h1 class="book-title" id="main-title">Το Σκοτάδι του Ρέιβενκρος</h1>
+            
+            <!-- Τίτλος με εφέ ομίχλης και ήπιας φωτιάς -->
+            <div class="title-container">
+                <div class="fog-effect"></div>
+                <h1 class="book-title" id="main-title">Το Σκοτάδι του Ρέιβενκρος</h1>
+            </div>
+
             <p class="book-tagline">Όλοι νόμιζαν πως είναι ασφαλείς, μέχρι που εκείνη επέστρεψε.</p>
             <a href="https://www.pigi.gr/product/vivlio-fantasias-to-skotadi-tou-ravenkros-ekdoseis-pigi/" target="_blank" class="cta-btn">Προπαραγγειλε το Βιβλιο</a>
         </div>
@@ -453,7 +457,8 @@
 
     <div class="container">
         <!-- Synopsis Section -->
-        <section class="synopsis-section">
+        <section class="synopsis-section" style="position: relative;">
+            <div class="crow-layer" id="synopsis-crows"></div>
             <div class="quote-callout">
                 «Κανείς στο Ρέιβενκρος δεν άκουσε τις τελευταίες του κραυγές...»
             </div>
@@ -461,7 +466,7 @@
             <div class="synopsis-text">
                 <p>Το Ρέιβενκρος είναι ένας τόπος τυλιγμένος στη σιωπή, εκεί όπου η ομίχλη δεν φεύγει ποτέ. Κανείς δεν μιλάει για το σκοτεινό παρελθόν – όμως όλοι το κουβαλούν. Μια άγνωστη γυναίκα καταφθάνει ένα παγωμένο βράδυ, κι από εκείνη τη στιγμή όλα αλλάζουν.</p>
                 <p>Οι παλιοί ψίθυροι ξυπνούν κι ο αέρας μυρίζει ξανά καμένο ξύλο. Μια κατάρα, παλιά όσο και το ίδιο το χωριό, θα ζητήσει να ολοκληρωθεί και η μάγισσα θα είναι αμείλικτη.</p>
-                <p>Ανεξήγητα φαινόμενα αρχίζουν να εμφανίζονται στο Ρέιβενκρος: η ομίχλη, τα κοράκια, το χιόνι, μια ανίατη ασθένεια. Όλοι θα οδηγηθούν στην παράνοια και η μάγισσα θα ψιθυρίζει ανάμεσα από τα δέντρα του δάσους, καλύπτοντας τα πάντα με το σκοτεινό της πέπλο.</p>
+                <p>Ανεξήγητα φαινόμενα αρχίζουν να εμφανίζονται στο Ρέιβενκρος: η ομίχλη, τα κοράκια, το χιόνι, μια ανίατη ασθένεια. Όλοι θα οδηγηθούν στην παράνοια και η μάγισσα θα ψιθυρίζει ανάμεσα από τα dέντρα του dάσους, καλύπτοντας τα πάντα με το σκοτεινό της πέπλο.</p>
                 <p><em>Αν τολμάς να αντικρίσεις τα πύρινα μάτια της, τότε το Ρέιβενκρος σε περιμένει…</em></p>
             </div>
         </section>
@@ -483,7 +488,8 @@
     </div>
 
     <!-- Author Section -->
-    <section class="author-section">
+    <section class="author-section" style="position: relative;">
+        <div class="crow-layer" id="author-crows"></div>
         <div class="container">
             <div class="author-grid">
                 <div>
@@ -516,7 +522,7 @@
 
     <!-- Scripts -->
     <script>
-        // 1. Audio Control
+        // Audio Control
         const audio = document.getElementById('soundtrack');
         const playPauseBtn = document.getElementById('playPauseBtn');
         const audioStatus = document.getElementById('audioStatus');
@@ -533,31 +539,40 @@
             }
         }
 
-        // 2. Παραγωγή αληθοφανών μικρών κορακιών στο φόντο
-        const crowContainer = document.getElementById('crow-background-container');
+        // Μηχανισμός Παραγωγής Κορακιών στα κατάλληλα επίπεδα (layers)
+        const crowContainers = [
+            document.getElementById('hero-crows'),
+            document.getElementById('synopsis-crows'),
+            document.getElementById('author-crows')
+        ];
         
         function spawnCrow() {
-            if (!crowContainer) return;
+            // Επιλέγει τυχαία ένα container για να πετάξει το κοράκι
+            const container = crowContainers[Math.floor(Math.random() * crowContainers.length)];
+            if (!container) return;
             
             const crow = document.createElement('div');
             crow.className = 'scary-crow';
             
             const side = Math.random() > 0.5 ? 1 : -1;
-            const startX = side === 1 ? -50 : window.innerWidth + 50;
-            const startY = Math.random() * window.innerHeight;
-            const targetX = side === 1 ? window.innerWidth + 50 : -50;
-            const targetY = startY + (Math.random() - 0.5) * 300;
+            const containerWidth = container.offsetWidth || window.innerWidth;
+            const containerHeight = container.offsetHeight || 600;
             
-            const duration = Math.random() * 6000 + 6000; // Πολύ αργή, ρεαλιστική πτήση βάθους
-            const scale = Math.random() * 0.4 + 0.15; // Μικρά κοράκια για να φαίνονται μακριά
+            const startX = side === 1 ? -60 : containerWidth + 60;
+            const startY = Math.random() * (containerHeight * 0.7);
+            const targetX = side === 1 ? containerWidth + 60 : -60;
+            const targetY = startY + (Math.random() - 0.5) * 200;
+            
+            const duration = Math.random() * 5000 + 5000; 
+            const scale = Math.random() * 0.35 + 0.2; // Μικρά, αληθοφανή κοράκια βάθους
             
             crow.style.top = `${startY}px`;
             crow.style.left = `${startX}px`;
             crow.style.transform = `scale(${scale}) scaleX(${side})`;
-            crow.style.animation = `crowFlap 0.5s infinite`;
-            crow.style.opacity = Math.random() * 0.3 + 0.15; // Διακριτικά στο φόντο
+            crow.style.animation = `crowFlap 0.4s infinite`;
+            crow.style.opacity = Math.random() * 0.4 + 0.3; // Απόλυτα ορατά στο σκοτεινό φόντο
             
-            crowContainer.appendChild(crow);
+            container.appendChild(crow);
             
             crow.animate([
                 { left: `${startX}px`, top: `${startY}px` },
@@ -570,11 +585,11 @@
             setTimeout(() => { crow.remove(); }, duration);
         }
 
-        // Συνεχής ροή μικρών κορακιών στο βάθος
-        for(let i=0; i<4; i++) { setTimeout(spawnCrow, Math.random() * 5000); }
-        setInterval(spawnCrow, 3000);
+        // Αρχικά κοράκια και συνεχής ροή
+        for(let i=0; i<3; i++) { setTimeout(spawnCrow, Math.random() * 3000); }
+        setInterval(spawnCrow, 3500);
 
-        // 3. Μηχανισμός Canvas για Χιόνι & Στάχτη (Πάνω από όλα)
+        // Μηχανισμός Canvas για Χιόνι & Στάχτη
         const canvas = document.getElementById('ambient-canvas');
         const ctx = canvas.getContext('2d');
         const titleEl = document.getElementById('main-title');
@@ -590,12 +605,11 @@
         const snowflakes = [];
         const ashes = [];
 
-        // Δημιουργία Χιονιού σε όλη την οθόνη
-        for (let i = 0; i < 80; i++) {
+        for (let i = 0; i < 75; i++) {
             snowflakes.push({
                 x: Math.random() * width,
                 y: Math.random() * height,
-                r: Math.random() * 2 + 0.8,
+                r: Math.random() * 1.8 + 0.7,
                 d: Math.random() * 0.4 + 0.2
             });
         }
@@ -604,7 +618,7 @@
             ctx.clearRect(0, 0, width, height);
 
             // Σχεδίαση Χιονιού (Πάνω από όλα)
-            ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+            ctx.fillStyle = "rgba(255, 255, 255, 0.45)";
             ctx.beginPath();
             for (let i = 0; i < snowflakes.length; i++) {
                 const f = snowflakes[i];
@@ -612,7 +626,7 @@
                 ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2, true);
 
                 f.y += f.d;
-                f.x += Math.sin(f.y / 30) * 0.2;
+                f.x += Math.sin(f.y / 30) * 0.15;
 
                 if (f.y > height) {
                     snowflakes[i] = { x: Math.random() * width, y: 0, r: f.r, d: f.d };
@@ -620,35 +634,34 @@
             }
             ctx.fill();
 
-            // Παραγωγή Στάχτης από τον τίτλο
+            // Παραγωγή Στάχτης από τον φλεγόμενο τίτλο
             if (titleEl) {
                 const rect = titleEl.getBoundingClientRect();
-                if (rect.bottom > 0 && rect.top < height && Math.random() < 0.35) {
+                if (rect.bottom > 0 && rect.top < height && Math.random() < 0.25) {
                     ashes.push({
                         x: rect.left + Math.random() * rect.width,
-                        y: rect.bottom + window.scrollY - 10,
-                        size: Math.random() * 2.5 + 0.8,
-                        speedY: Math.random() * 1.2 + 0.6,
-                        speedX: (Math.random() - 0.5) * 0.6,
-                        alpha: 0.9
+                        y: rect.bottom + window.scrollY - 5,
+                        size: Math.random() * 2 + 0.7,
+                        speedY: Math.random() * 1.0 + 0.5,
+                        speedX: (Math.random() - 0.5) * 0.5,
+                        alpha: 0.85
                     });
                 }
             }
 
-            // Σχεδίαση Καμμένης Στάχτης που πέφτει κάτω
+            // Σχεδίαση Στάχτης που πέφτει
             for (let i = ashes.length - 1; i >= 0; i--) {
                 const a = ashes[i];
-                // Μετατροπή των συντεταγμένων της στάχτης με βάση το scroll για να πέφτει σωστά
                 const screenY = a.y - window.scrollY;
 
-                ctx.fillStyle = `rgba(90, 90, 95, ${a.alpha})`;
+                ctx.fillStyle = `rgba(80, 80, 85, ${a.alpha})`;
                 ctx.beginPath();
                 ctx.arc(a.x, screenY, a.size, 0, Math.PI * 2);
                 ctx.fill();
 
                 a.y += a.speedY;
                 a.x += a.speedX;
-                a.alpha -= 0.002;
+                a.alpha -= 0.0025;
 
                 if (a.alpha <= 0 || screenY > height) {
                     ashes.splice(i, 1);
