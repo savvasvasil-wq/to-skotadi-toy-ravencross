@@ -49,7 +49,7 @@
             color: #ff3333;
         }
 
-        /* Canvas για Χιόνι και Στάχτη */
+        /* Canvas για Χιόνι, Στάχτη και Φλεγόμενους Μετεωρίτες */
         #ambient-canvas {
             position: fixed;
             top: 0;
@@ -60,72 +60,58 @@
             pointer-events: none;
         }
 
-        /* Μόνιμη Ομίχλη στο Κάτω Μέρος (Fixed) */
+        /* Μόνιμη Λεπτή Ομίχλη στο Κάτω Μέρος (Σαν θάλασσα σε ήπια τρικυμία) */
         .bottom-fog-container {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 150px;
-            z-index: 9999; /* Πάνω από το περιεχόμενο, κάτω από το Canvas */
+            height: 180px;
+            z-index: 9999;
             pointer-events: none;
-            overflow: visible;
-            background: linear-gradient(to top, rgba(200, 200, 210, 0.08) 0%, transparent 100%);
+            overflow: hidden;
         }
 
-        .bottom-fog {
+        /* Επίπεδα ομίχλης με κυματιστή κίνηση */
+        .fog-wave {
             position: absolute;
-            bottom: -20px;
-            left: -50%;
+            bottom: 0;
+            left: 0;
             width: 200%;
-            height: 120px;
-            background: radial-gradient(circle, rgba(200, 200, 210, 0.12) 0%, rgba(150, 150, 160, 0.04) 60%, transparent 80%);
-            filter: blur(20px);
-            animation: bottom-fog-drift 12s infinite linear;
+            height: 100%;
+            background-repeat: repeat-x;
+            background-position: bottom center;
+            transform: translate3d(0, 0, 0);
+            opacity: 0.25;
+            filter: blur(4px);
         }
 
-        @keyframes bottom-fog-drift {
+        /* Layer 1: Κίνηση προς τη μία κατεύθυνση */
+        .fog-wave.layer1 {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,60 C150,100 350,20 500,60 C650,100 850,20 1000,60 C1150,100 1350,20 1500,60 L1500,120 L0,120 Z' fill='%23c8c8d2'/%3E%3C/svg%3E");
+            background-size: 50% 120px;
+            animation: wave-drift-right 20s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+        }
+
+        /* Layer 2: Πιο λεπτή ομίχλη, αντίθετη smooth κίνηση */
+        .fog-wave.layer2 {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,50 C200,10 400,90 600,50 C800,10 1000,90 1200,50 L1200,120 L0,120 Z' fill='%23b4b4be'/%3E%3C/svg%3E");
+            background-size: 40% 140px;
+            opacity: 0.18;
+            filter: blur(6px);
+            animation: wave-drift-left 15s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+        }
+
+        @keyframes wave-drift-right {
             0% { transform: translateX(0) scaleY(1); }
-            50% { transform: translateX(25%) scaleY(1.2); }
+            50% { transform: translateX(-25%) scaleY(1.1); }
             100% { transform: translateX(0) scaleY(1); }
         }
 
-        /* Μυστηριώδεις Φιγούρες (1/5 του πλάτους) */
-        .shadow-figure {
-            position: fixed;
-            bottom: 20px;
-            width: 20vw; /* 1/5 της σελίδας */
-            height: 250px;
-            background: linear-gradient(to top, rgba(150, 150, 160, 0.25) 0%, rgba(100, 100, 105, 0.05) 70%, transparent 100%);
-            /* Απόκοσμο σχήμα φιγούρας χωρίς πρόσωπο */
-            clip-path: polygon(50% 0%, 65% 15%, 70% 30%, 55% 45%, 85% 100%, 15% 100%, 45% 45%, 30% 30%, 35% 15%);
-            filter: blur(8px);
-            z-index: 9998;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .figure-left {
-            left: 2%;
-            animation: appear-figure-left 16s infinite ease-in-out;
-        }
-
-        .figure-right {
-            right: 2%;
-            animation: appear-figure-right 16s infinite ease-in-out;
-            animation-delay: 8s; /* Εναλλάξ εμφάνιση ανά 8 δευτερόλεπτα */
-        }
-
-        @keyframes appear-figure-left {
-            0%, 100% { opacity: 0; transform: translateY(30px) scale(0.9) skewX(-2deg); filter: blur(10px); }
-            20%, 40% { opacity: 0.7; transform: translateY(0) scale(1) skewX(0deg); filter: blur(6px); }
-            60% { opacity: 0; transform: translateY(-20px) scale(1.05) skewX(2deg); filter: blur(12px); }
-        }
-
-        @keyframes appear-figure-right {
-            0%, 100% { opacity: 0; transform: translateY(30px) scale(0.9) skewX(2deg); filter: blur(10px); }
-            20%, 40% { opacity: 0.7; transform: translateY(0) scale(1) skewX(0deg); filter: blur(6px); }
-            60% { opacity: 0; transform: translateY(-20px) scale(1.05) skewX(-2deg); filter: blur(12px); }
+        @keyframes wave-drift-left {
+            0% { transform: translateX(-50%) scaleY(1); }
+            50% { transform: translateX(-25%) scaleY(0.9); }
+            100% { transform: translateX(-50%) scaleY(1); }
         }
 
         /* Audio Controller */
@@ -454,20 +440,18 @@
             .book-title { font-size: 2.5rem; }
             .synopsis-text { font-size: 1.2rem; text-align: left; }
             .author-img { max-width: 250px; }
-            .shadow-figure { width: 30vw; height: 180px; } /* Ελαφρώς μεγαλύτερο ποσοστό στα κινητά για να φαίνεται */
         }
     </style>
 </head>
 <body>
 
-    <!-- Canvas για χιόνι και στάχτη -->
+    <!-- Canvas για χιόνι, στάχτη και φλόγες μετεωρίτες -->
     <canvas id="ambient-canvas"></canvas>
 
-    <!-- Μόνιμη Ομίχλη & Φιγούρες στο Κάτω Μέρος -->
+    <!-- Μόνιμη Smooth Ομίχλη στο Κάτω Μέρος -->
     <div class="bottom-fog-container">
-        <div class="bottom-fog"></div>
-        <div class="shadow-figure figure-left"></div>
-        <div class="shadow-figure figure-right"></div>
+        <div class="fog-wave layer1"></div>
+        <div class="fog-wave layer2"></div>
     </div>
 
     <!-- Audio Player -->
@@ -578,7 +562,7 @@
             }
         }
 
-        // Μηχανισμός Canvas για Χιόνι & Στάχτη
+        // Μηχανισμός Canvas για Χιόνι, Στάχτη & Φλόγες (Μετεωρίτες)
         const canvas = document.getElementById('ambient-canvas');
         const ctx = canvas.getContext('2d');
         const titleEl = document.getElementById('main-title');
@@ -593,7 +577,9 @@
 
         const snowflakes = [];
         const ashes = [];
+        const fireMeteors = [];
 
+        // Δημιουργία Χιονιού
         for (let i = 0; i < 75; i++) {
             snowflakes.push({
                 x: Math.random() * width,
@@ -603,10 +589,25 @@
             });
         }
 
+        // Συνάρτηση για προσθήκη φλόγας-μετεωρίτη (πιο αραιή συχνότητα)
+        function spawnFireMeteor() {
+            if (fireMeteors.length < 12) { // Όριο για να παραμένουν αραιά
+                fireMeteors.push({
+                    x: Math.random() * (width + 200) - 100, // Ξεκινάει και εκτός οθόνης για τη διαγώνια κίνηση
+                    y: -20,
+                    length: Math.random() * 40 + 20, // Μήκος της πύρινης τροχιάς
+                    speedY: Math.random() * 3.5 + 2.5, // Ταχύτητα πτώσης μετεωρίτη
+                    speedX: Math.random() * -1.5 - 1.0, // Διαγώνια κίνηση προς τα αριστερά
+                    r: Math.random() * 2 + 1,
+                    alpha: 1
+                });
+            }
+        }
+
         function drawAmbient() {
             ctx.clearRect(0, 0, width, height);
 
-            // Σχεδίαση Χιονιού
+            // 1. Σχεδίαση Χιονιού
             ctx.fillStyle = "rgba(255, 255, 255, 0.45)";
             ctx.beginPath();
             for (let i = 0; i < snowflakes.length; i++) {
@@ -623,7 +624,42 @@
             }
             ctx.fill();
 
-            // Παραγωγή Στάχτης από τον τίτλο
+            // 2. Παραγωγή & Σχεδίαση Φλόγας (Μετεωρίτες)
+            if (Math.random() < 0.03) { spawnFireMeteor(); } // Αραιή παραγωγή
+
+            for (let i = fireMeteors.length - 1; i >= 0; i--) {
+                const m = fireMeteors[i];
+                
+                // Δημιουργία πύρινης τροχιάς (Gradient tail)
+                const gradient = ctx.createLinearGradient(m.x, m.y, m.x - m.speedX * m.length * 0.2, m.y - m.speedY * m.length * 0.2);
+                gradient.addColorStop(0, `rgba(255, 60, 0, ${m.alpha})`);
+                gradient.addColorStop(0.3, `rgba(255, 150, 0, ${m.alpha * 0.6})`);
+                gradient.addColorStop(1, `rgba(139, 0, 0, 0)`);
+
+                ctx.strokeStyle = gradient;
+                ctx.lineWidth = m.r * 2;
+                ctx.lineCap = 'round';
+                
+                ctx.beginPath();
+                ctx.moveTo(m.x, m.y);
+                ctx.lineTo(m.x - m.speedX * 5, m.y - m.speedY * 5); // Μικρή κλίση της κεφαλής
+                ctx.stroke();
+
+                // Ενημέρωση θέσης μετεωρίτη
+                m.y += m.speedY;
+                m.x += m.speedX;
+
+                // Σταδιακό σβήσιμο καθώς πλησιάζει στο κάτω μέρος
+                if (m.y > height * 0.7) {
+                    m.alpha -= 0.02;
+                }
+
+                if (m.alpha <= 0 || m.y > height || m.x < -50) {
+                    fireMeteors.splice(i, 1);
+                }
+            }
+
+            // 3. Παραγωγή Στάχτης από τον τίτλο
             if (titleEl) {
                 const rect = titleEl.getBoundingClientRect();
                 if (rect.bottom > 0 && rect.top < height && Math.random() < 0.25) {
